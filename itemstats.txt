@@ -1,0 +1,45 @@
+{{{{User:MisterSynergy/header}}}}
+
+== Distribution by Q-ID bin ==
+<div style="margin: 1em auto; max-width: 920px;">
+{{{{#invoke:Chart|bar chart
+| width = 920
+| stack = 1
+| group 1 = {dataGray}
+| group 2 = {dataWhite}
+| group 3 = {dataBlue}
+| group 4 = {dataRed} 
+| group 5 = {dataBlack}
+| x legends = {legend}
+| colors = #CCCCCC : #FFFFFF : #0000FF : #FF0000 : #000000
+| units suffix = _items
+| group names = items without claims : items with claims : redirected Q-IDs : deleted Q-IDs : omitted Q-IDs
+}}}}
+</div>
+
+== Cumulative pie chart ==
+<div style="margin: 1em auto; max-width: 320px;">
+{{{{#invoke:Chart|pie chart
+| radius = 160
+| slices = 
+    ( {sumBlack} : omitted Q-IDs : #000000 )
+    ( {sumRed} : deleted Q-IDs : #FF0000 )
+    ( {sumBlue} : redirected Q-IDs : #0000FF )
+    ( {sumWhite} : items with claims: #FFFFFF )
+    ( {sumGray} : items without claims: #CCCCCC )
+| percent = true
+}}}}
+</div>
+
+== Item statistics ==
+* Inspired by the graph at [[User:Succu|Succu's user page]]
+* As of {timestamp} (newest item: [[Q{newestitem}]])
+* bin-size = {binsizeFormatted}
+* Sources for numbers:
+** Query1: [//query.wikidata.org/#SELECT%20%3Fbin%20%28COUNT%28%2a%29%20AS%20%3Fcnt%29%20WHERE%20%7B%0A%20%20%3Fitem%20wikibase%3Astatements%200%20.%0A%20%20BIND%28ceil%28xsd%3Ainteger%28SUBSTR%28STR%28%3Fitem%29%2C33%29%29%20%2F%20{binsize}%29%20AS%20%3Fbin%29%20.%0A%7D%20GROUP%20BY%20%3Fbin%20ORDER%20BY%20ASC%28%3Fbin%29 items without claims per Q-ID bin] (<span style="color:#888888;font-weight:bold;">grey color</span>)
+** Query2: [//quarry.wmcloud.org/query/67144 redirected Q-IDs per bin] (<span style="color:#0000FF;font-weight:bold;">blue color</span>)
+** Query3: [//quarry.wmflabs.org/query/25485 total number of items (including redirects) per Q-ID bin]
+** Query4: [//quarry.wmflabs.org/query/27915 deleted Q-IDs per bin] (<span style="color:#FF0000;font-weight:bold;">red color</span>)
+** bin-wise <code>Query3 - Query1 - Query2</code> (items with claims, <span style="color:#DDDDDD;font-weight:bold;">white color</span>)
+** bin-wise <code>bin-size - Query3 - Query4</code> (omitted Q-IDs that have been skipped during item creation, <span style="color:#000000;font-weight:bold;">black color</span>)
+* Also interesting: [[User:Mahir256/lonelyitems]]
