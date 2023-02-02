@@ -26,10 +26,12 @@ spec:
               limits:
                 memory: "100Mi"
                 cpu: "100m"
-            command: [ "/data/project/msynbot/pywikibot_tasks/itemstats/venv/bin/python3" ]
-            args: [ "/data/project/shared/pywikibot/stable/pwb.py", "/data/project/msynbot/pywikibot_tasks/itemstats/itemstats.py" ]
-            workingDir: /data/project/msynbot/pywikibot_tasks/itemstats
             env:
             - name: HOME
               value: /data/project/msynbot
+            - name: PYTHONPATH
+              value: /data/project/shared/pywikibot/stable
+            workingDir: /data/project/msynbot/pywikibot_tasks/itemstats
+            command: [ venv/bin/python3 ]
+            args: [ itemstats.py ]
           restartPolicy: Never
