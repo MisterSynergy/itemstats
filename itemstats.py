@@ -1,7 +1,7 @@
 from os.path import expanduser
 from time import strftime
-from typing import TypedDict
-from mysql.connector import MySQLConnection
+from typing import Any, TypedDict
+import mariadb
 import pywikibot as pwb
 import requests
 
@@ -34,12 +34,12 @@ class ReportDict(TypedDict):
 
 class WikidataReplica:
     def __init__(self):
-        self.replica = MySQLConnection(
+        self.replica = mariadb.connect(
             host='wikidatawiki.analytics.db.svc.wikimedia.cloud',
             database='wikidatawiki_p',
-            option_files=f'{expanduser("~")}/replica.my.cnf'
+            default_file=f'{expanduser("~")}/replica.my.cnf'
         )
-        self.cursor = self.replica.cursor()
+        self.cursor = self.replica.cursor(dictionary=True)
 
 
     def __enter__(self):
@@ -51,7 +51,7 @@ class WikidataReplica:
         self.replica.close()
 
 
-def query_mediawiki(query:str) -> list[tuple[str, str]]:  # only simple queries here
+def query_mediawiki(query:str) -> list[dict[str, Any]]:  # only simple queries here
     with WikidataReplica() as db_cursor:
         db_cursor.execute(query)
         result = db_cursor.fetchall()
@@ -161,8 +161,8 @@ ORDER BY
   bin ASC""")
     
     data2 = {}
-    for key, value in query2_result:
-        data2[int( key )] = int( value )
+    for row in query2_result:
+        data2[int( row.get('bin', 0.0) )] = int( row.get('cnt', 0) )
     sum_data2 = sum( [ data2[i] for i in data2 ] )
 
     return data2, sum_data2
@@ -182,8 +182,8 @@ ORDER BY
   bin ASC""")
 
     data3 = {}
-    for key, value in query3_result: # list of tuples
-        data3[ int( key ) ] = int( value )
+    for row in query3_result:
+        data3[ int( row.get('bin', 0.0) ) ] = int( row.get('cnt', 0) )
 #    sum_data3 = sum( [ data3[i] for i in data3 ] ) # currently not needed
 
     return data3
@@ -215,8 +215,8 @@ ORDER BY
   bin ASC""")
 
     data4 = {}
-    for key, value in query4_result: # list of tuples
-        data4[ int( key ) ] = int( value )
+    for row in query4_result:
+        data4[ int( row.get('bin', 0.0) ) ] = int( row.get('cnt', 0) )
     sum_data4 = sum( [ data4[i] for i in data4 ] )
 
     return data4, sum_data4
