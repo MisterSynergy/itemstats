@@ -1,4 +1,4 @@
-from os.path import expanduser
+from pathlib import Path
 from time import strftime
 from typing import Any, TypedDict
 import mariadb
@@ -37,7 +37,7 @@ class WikidataReplica:
         self.replica = mariadb.connect(
             host='wikidatawiki.analytics.db.svc.wikimedia.cloud',
             database='wikidatawiki_p',
-            default_file=f'{expanduser("~")}/replica.my.cnf'
+            default_file=str(Path.home() / 'replica.my.cnf'),
         )
         self.cursor = self.replica.cursor(dictionary=True)
 
@@ -60,7 +60,7 @@ def query_mediawiki(query:str) -> list[dict[str, Any]]:  # only simple queries h
 
 
 def write_to_wikipage(fulldata:ReportDict) -> None:
-    filename = f'{expanduser("~")}/pywikibot_tasks/itemstats/itemstats.txt'
+    filename = Path.home() / 'pywikibot_tasks/itemstats/itemstats.txt'
     with open(filename, mode='r', encoding='utf8') as file_handle:
         wikitext = file_handle.read()
 
